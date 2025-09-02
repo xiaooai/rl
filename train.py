@@ -60,19 +60,22 @@ def evaluate(agent: QAgent, episodes=500):
 def main():
     ap = argparse.ArgumentParser(description="Tabular Q-learning for Tic-Tac-Toe")
     ap.add_argument("--episodes", type=int, default=500000)
+    ap.add_argument("--load", type=str, default="q_table.json")
     ap.add_argument("--alpha", type=float, default=0.5)
     ap.add_argument("--gamma", type=float, default=0.99)
     ap.add_argument("--epsilon", type=float, default=0.2)
     ap.add_argument("--eval_every", type=int, default=10000)
-    ap.add_argument("--save", type=str, default="q_table.json")
+    ap.add_argument("--save", type=str, default="q_table_draw.json")
     args = ap.parse_args()
 
     agent = QAgent(alpha=args.alpha, gamma=args.gamma, epsilon=args.epsilon)
     if args.save and os.path.exists(args.save):
         agent.load(args.save)
-    print(f"Loaded Q table from {args.save}")
+        print(f"Loaded Q table from {args.save}")
 
     for ep in range(1, args.episodes+1):
+        # 动态调整 epsilon
+        agent.epsilon = max(0.2, args.epsilon * (1 - ep / args.episodes))
         # 自我对弈一局，并在对弈过程中在线更新
         env = TicTacToe()
         board, player = env.reset()
@@ -90,7 +93,7 @@ def main():
 
         if args.eval_every > 0 and ep % args.eval_every == 0:
             # 评估：与随机对手对战（智能体执先）
-            w, d, l = evaluate(agent, episodes=200)
+            w, d, l = evaluate(agent, episodes=1000)
             print(f"[{ep}/{args.episodes}] vs Random -> Win {w}, Draw {d}, Lose {l}  (WinRate={w/(w+l+1e-9):.2f})")
 
     if args.save:

@@ -39,12 +39,12 @@ class TicTacToe:
         winner = self.check_winner()
         if winner is not None:
             # 胜者 winner: +1 or -1； 奖励从“执行者视角”
-            reward = 1.0 if winner == self.current_player else -1.0
+            reward = 1 if winner == self.current_player else -1
             return (self.board, reward, True, {})
 
         if all(v != 0 for v in self.board):
             # 平局
-            return (self.board, 0.0, True, {})
+            return (self.board, 0, True, {})
 
         # 轮到对手
         self.current_player *= -1
