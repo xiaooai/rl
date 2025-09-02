@@ -1,0 +1,38 @@
+# 强化学习井字棋（Tic-Tac-Toe）- 表格型 Q-learning
+
+零依赖（只用 Python 标准库），可直接训练并与智能体对弈。  
+单一 Q 表（**对当前行动方的“标准化视角”编码**），自我对弈训练，支持保存/加载。
+
+## 快速开始
+
+```bash
+# 1) 训练 50,000 局（大约几秒钟）
+python train.py --episodes 50000 --eval_every 5000 --save q_table.json
+
+# 2) 人机对战（载入训练好的 Q 表，智能体贪心行棋）
+python play_cli.py --load q_table.json --human X  # 你执 X 先手
+# 或
+python play_cli.py --load q_table.json --human O  # 你执 O 后手
+```
+
+更多参数：
+```bash
+python train.py -h
+python play_cli.py -h
+```
+
+## 文件说明
+- `ttt_env.py`：井字棋环境（9 格、X=1, O=-1）
+- `q_agent.py`：表格型 Q-learning 智能体（单表、视角标准化、ε-贪心）
+- `train.py`：自我对弈训练脚本（可周期评估并保存 Q 表）
+- `play_cli.py`：命令行人机对战
+
+## 训练思路（简述）
+- 状态编码以“当前行动方”为视角：把棋盘乘以当前玩家的阵营（我方=1，对手=-1），从而**X 和 O 共享同一张 Q 表**。
+- 更新：`Q[s,a] ← Q[s,a] + α*(r + γ*max_a' Q[s',a'] - Q[s,a])`；终局无未来项。
+- 奖励：赢 +1，输 -1，和 0。
+- ε-贪心：训练期探索（默认 ε=0.2），对局时可设为 0 纯贪心。
+
+## 规则提示
+- 棋子：X 先手（+1），O 后手（-1）
+- 连成 3 子（行/列/对角线）获胜；满盘未分胜负为平局。
