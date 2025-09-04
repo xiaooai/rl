@@ -10,22 +10,21 @@
 python train.py --episodes 50000 --eval_every 5000 --save q_table.json
 
 # 2) 人机对战（载入训练好的 Q 表，智能体贪心行棋）
-python play_cli.py --load q_table.json --human X  # 你执 X 先手
-# 或
-python play_cli.py --load q_table.json --human O  # 你执 O 后手
+python play_gui.py --load q_table.json  
+
 ```
 
 更多参数：
 ```bash
 python train.py -h
-python play_cli.py -h
+python play_gui.py -h
 ```
 
 ## 文件说明
 - `ttt_env.py`：井字棋环境（9 格、X=1, O=-1）
 - `q_agent.py`：表格型 Q-learning 智能体（单表、视角标准化、ε-贪心）
 - `train.py`：自我对弈训练脚本（可周期评估并保存 Q 表）
-- `play_cli.py`：命令行人机对战
+- `play_gui.py`：命令行人机对战
 
 ## 训练思路（简述）
 - 状态编码以“当前行动方”为视角：把棋盘乘以当前玩家的阵营（我方=1，对手=-1），从而**X 和 O 共享同一张 Q 表**。
