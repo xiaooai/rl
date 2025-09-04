@@ -10,7 +10,7 @@
 python train.py --episodes 50000 --eval_every 5000 --save q_table.json
 
 # 2) 人机对战（载入训练好的 Q 表，智能体贪心行棋）
-python play_gui.py --load q_table.json  
+python play_gui.py  
 
 ```
 
